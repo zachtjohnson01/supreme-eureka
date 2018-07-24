@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
+import Week from "./components/Week/Week";
 
 class App extends Component {
   state = {users: []}
@@ -15,6 +17,8 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar />
+        <Week />
+        <Footer />
       </div>
     );
   }
