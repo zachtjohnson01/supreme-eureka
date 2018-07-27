@@ -17,9 +17,6 @@ class Day extends Component {
     constructor(props){
         super(props);
         this.state = {
-            breakfast: true,
-            lunch: true,
-            dinner: true
         }
     }
 
@@ -27,10 +24,22 @@ class Day extends Component {
 
         return (
             <div className="day">
-                <div className="day-title">{this.props.day_name}</div>
-                <Meal meal_name={"Breakfast"}/>
-                <Meal meal_name={"Lunch"}/>
-                <Meal meal_name={"Dinner"}/>
+                <div className="day-title">
+                    {this.props.day_name}
+                </div>
+
+                <Meal 
+                    meal_name={"Breakfast"}
+                    changebreakfast={this.props.changeBreakfast}
+                    />
+                <Meal 
+                    meal_name={"Lunch"}
+                    changelunch={this.props.changeLunch}
+                    />
+                <Meal 
+                    meal_name={"Dinner"}
+                    changedinner={this.props.changeDinner}
+                />
             </div>
         )
     }

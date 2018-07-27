@@ -1,6 +1,13 @@
-.container {
+.week-container {
     top: 100px;
     padding: 80px 0;
     display: flex;
     justify-content: center;
+}
+
+.totals-container {
+    font-size: 5vh;
+    text-align: left;
+    color: #0083BB;
+    padding-left: 10vw;
 }
