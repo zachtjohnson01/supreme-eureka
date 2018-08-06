@@ -14,34 +14,25 @@ WebFont.load({
 // import axios from "axios";
 
 class Week extends Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             breakfast: 7,
             lunch: 7,
-            dinner: 7
+            dinner: 7,
+            breakfast_variety: 1,
+            lunch_variety: 1,
+            dinner_variety: 7,
+            breakfast_people: 2,
+            lunch_people: 2,
+            dinner_people: 2,
         }
+        this.removeUniquePerson = props.removeUniquePerson;
     }
 
-    onChangeBreakfastCount(change) {
-        let updatebreakfast = this.state.breakfast + change
-        this.setState(prevState => ({
-            breakfast: updatebreakfast
-        }))
-    };
-    onChangeLunchCount(change) {
-        let updatelunch = this.state.lunch + change
-        this.setState(prevState => ({
-            lunch: updatelunch
-        }))
-    };
-    onChangeDinnerCount(change) {
-        let updatedinner = this.state.dinner + change
-        this.setState(prevState => ({
-            dinner: updatedinner
-        }))
-    };
-
+    handleChange(event) {
+        this.setState( {name: event.target.value})
+    }
 
     
     render() {
@@ -49,55 +40,65 @@ class Week extends Component {
         return (
 
             <div className="container">
-                <div className="week-container">
+                <div className={this.props.classNameProp}>
+                    <div className="item auto person">
+                        <div className="input-title">
+                            Person {this.props.personNumber}
+                        </div>
+                        <div className="input-input">
+                            <input 
+                                type="text" 
+                                name="name" 
+                                value={this.state.name}
+                                onChange={this.handleChange.bind(this)}
+                            />
+                        </div>
+                    </div>
                     <Day 
                         day_name={"Monday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Tuesday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Wednesday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Thursday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Friday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Saturday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                         />
                     <Day 
                         day_name={"Sunday"}
-                        changeBreakfast={this.onChangeBreakfastCount.bind(this)}
-                        changeLunch={this.onChangeLunchCount.bind(this)}
-                        changeDinner={this.onChangeDinnerCount.bind(this)}
+                        changeBreakfast={this.props.changeBreakfast}
+                        changeLunch={this.props.changeLunch}
+                        changeDinner={this.props.changeDinner}
                     />
                 </div>
-                <div className="totals-container">
-                    <div>Total Breakfasts: {this.state.breakfast}</div>
-                    <div>Total Lunches: {this.state.lunch}</div>
-                    <div>Total Dinners: {this.state.dinner}</div>
-                </div>
+
+
             </div>
         )
     }
