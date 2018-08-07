@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-// import {Link, withRouther} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import "../../App.css";
 import "./Navbar.css";
 import WebFont from 'webfontloader';
@@ -22,10 +22,14 @@ class Navbar extends Component {
                 </section>
                 <section className="navbar-options">
                     <section className="navbar-section">
-                        <h1 className="heading">Test</h1>
+                        <Link to="/multiweek" className="logo btn btn-link">
+                            <h1 className="heading">The Week</h1>
+                        </Link>
                     </section>
                     <section className="navbar-section">
-                        <h1 className="heading">Test</h1>
+                        <Link to="/grocerytrip" classname="logo btn btl-link">
+                            <h1 className="heading">Grocery Trip</h1>
+                        </Link>
                     </section>
                     <section className="navbar-section">
                         <h1 className="heading">Test</h1>
@@ -37,4 +41,4 @@ class Navbar extends Component {
 
 }
 
-export default Navbar;
+export default withRouter(Navbar);
