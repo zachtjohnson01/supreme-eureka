@@ -52,7 +52,7 @@ class GroceryTrip extends Component {
       render() {
         const { data } = this.state;
         return (
-          <div>
+          <div className="tablesize">
             <ReactTable
               data={data}
               columns={[
@@ -88,7 +88,7 @@ class GroceryTrip extends Component {
                 // }
               ]}
               defaultPageSize={20}
-              className="-striped -highlight"
+              className="-striped -highlight tablesize"
             />
             <br />
             <Tips />
