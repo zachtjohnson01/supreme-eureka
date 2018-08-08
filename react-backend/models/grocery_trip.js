@@ -6,9 +6,9 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true
         },
         grocery_store_name: DataTypes.STRING,
-        trip_date: DataTypes.DATE,
-        item_count: DataTypes.INTEGER,
-        tax: DataTypes.FLOAT
+        item_count: DataTypes.STRING,
+        tax: DataTypes.STRING,
+        trip_date: DataTypes.STRING,
     });
     return groceryTrip;
 };

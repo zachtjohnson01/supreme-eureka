@@ -27,7 +27,7 @@ class Navbar extends Component {
                         </Link>
                     </section>
                     <section className="navbar-section">
-                        <Link to="/grocerytrip" classname="logo btn btl-link">
+                        <Link to="/grocerytrip" className="logo btn btl-link">
                             <h1 className="heading">Grocery Trip</h1>
                         </Link>
                     </section>

@@ -11,12 +11,12 @@ router.get("/", function(req, res) {
   })
 });
 
-router.post("/api/groceryTrip", function(req, res) {
+router.post("/", function(req, res) {
   db.groceryTrip.create({
     grocery_store_name: req.body.grocery_store_name,
-    trip_date: req.body.trip_date,
     item_count: req.body.item_count,
-    tax: req.body.tax
+    tax: req.body.tax,
+    trip_date: req.body.trip_date,
   }).then(function(data) {
     res.json({ id: data.insertId });
     // res.redirect("/");
