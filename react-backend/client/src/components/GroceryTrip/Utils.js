@@ -19,7 +19,7 @@ const newPerson = () => {
   };
 };
 
-export function makeData(len =1) {
+export function makeData(len =20) {
   return range(len).map(d => {
     return {
       ...newPerson(),

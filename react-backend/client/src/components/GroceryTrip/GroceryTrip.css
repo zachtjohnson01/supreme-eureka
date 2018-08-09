@@ -5,8 +5,24 @@ body {
   }
 
 .tablesize {
-  margin: 20px 5px;
-  height: 70vh;
+  /* margin: 80px 5px 0 5px; */
+  height: 60vh;
   width: 50vw;
   min-width: 400px;
+}
+.outersize {
+  margin: 20px 0px 0 10px;
+  height: 60vh;
+  width: 50vw;
+  min-width: 400px;
+  display: flex;
+}
+
+.store {
+  display: flex;
+  justify-content: center;
+}
+
+.item {
+  align-self: center;
 }

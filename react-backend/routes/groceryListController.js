@@ -14,9 +14,11 @@ router.get("/", function(req, res) {
 router.post("/", function(req, res) {
   db.groceryTrip.create({
     grocery_store_name: req.body.grocery_store_name,
-    item_count: req.body.item_count,
-    tax: req.body.tax,
     trip_date: req.body.trip_date,
+    grocery_store_item_name: req.body.grocery_store_item_name,
+    item_name: req.body.item_name,
+    price: req.body.price,
+    tax: req.body.tax
   }).then(function(data) {
     res.json({ id: data.insertId });
     // res.redirect("/");

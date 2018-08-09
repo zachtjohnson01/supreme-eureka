@@ -6,9 +6,11 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true
         },
         grocery_store_name: DataTypes.STRING,
-        item_count: DataTypes.STRING,
-        tax: DataTypes.STRING,
         trip_date: DataTypes.STRING,
+        grocery_store_item_name: DataTypes.STRING,
+        item_name: DataTypes.STRING,
+        price: DataTypes.STRING,
+        tax: DataTypes.STRING
     });
     return groceryTrip;
 };
