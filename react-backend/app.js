@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var firebase = require("firebase");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -43,6 +44,15 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Initialize Firebase
+// TODO: Replace with your project's customized code snippet
+var config = {
+  apiKey: "AIzaSyBe4LpKKm48PuMtTsaPmMPTfK4JXTnMxYA",
+  authDomain: "supreme-eureka.firebaseapp.com",
+  databaseURL: "https://supreme-eureka.firebaseio.com"
+};
+firebase.initializeApp(config);
 
 db.sequelize.sync().then(function() {
   app.listen(PORT, function() {
