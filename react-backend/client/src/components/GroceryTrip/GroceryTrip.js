@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import ReactTable from "react-table";
 import { makeData, Tips } from "./Utils";
+import firebase from "../../firebase.js";
 import axios from "axios";
 import "./GroceryTrip.css";
 import "react-table/react-table.css";
@@ -34,7 +35,8 @@ class GroceryTrip extends Component {
         );
       }
 
-      submitData = () => {
+      submitData = (e) => {
+        e.preventDefault();
           this.state.data.map(i => {
             if (
               // this.state.currentStore !== "" 
@@ -45,20 +47,39 @@ class GroceryTrip extends Component {
             ) {
               console.log("blank")
             } else {
-              axios.post("/api/groceryTrip/", {
-                    grocery_store_name: this.state.currentStore,
-                    trip_date: this.state.currentDate,
-                    grocery_store_item_name: i.storeItemName,
-                    item_name: i.itemName,
-                    price: i.price,
-                    tax: i.taxAmount
-                }).then(res => {
-                    console.log("submit data response: ");
-                    console.log(res);
-                    if (res.status === 200) {
-                        console.log("success")
-                    }
-                })
+              const itemsRef = firebase.database().ref('items');
+              const item = {
+                grocery_store_name: this.state.currentStore,
+                trip_date: this.state.currentDate,
+                grocery_store_item_name: i.storeItemName,
+                item_name: i.itemName,
+                price: i.price,
+                tax: i.taxAmount                
+              }
+              itemsRef.push(item);
+              this.setState({
+                currentStore: '',
+                currentDate: '',
+                storeItemName: '',
+                itemName: '',
+                price: '',
+                taxAmount: ''                
+
+              })
+              // axios.post("/api/groceryTrip/", {
+              //       grocery_store_name: this.state.currentStore,
+              //       trip_date: this.state.currentDate,
+              //       grocery_store_item_name: i.storeItemName,
+              //       item_name: i.itemName,
+              //       price: i.price,
+              //       tax: i.taxAmount
+              //   }).then(res => {
+              //       console.log("submit data response: ");
+              //       console.log(res);
+              //       if (res.status === 200) {
+              //           console.log("success")
+              //       }
+              //   })
             }
             
           })
