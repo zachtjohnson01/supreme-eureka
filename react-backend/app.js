@@ -52,7 +52,8 @@ var config = {
   authDomain: "supreme-eureka.firebaseapp.com",
   databaseURL: "https://supreme-eureka.firebaseio.com"
 };
-firebase.initializeApp(config);
+
+// firebase.initializeApp(config);
 
 db.sequelize.sync().then(function() {
   app.listen(PORT, function() {

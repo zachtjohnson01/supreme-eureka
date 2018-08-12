@@ -3,6 +3,12 @@ import {Link, withRouter} from "react-router-dom";
 import "../../App.css";
 import "./Navbar.css";
 import WebFont from 'webfontloader';
+import * as firebaseui from 'firebaseui';
+import {loginWithGoogle} from "../helpers/auth";
+import {firebaseAuth} from "../config/constants";
+
+const firebaseAuthKey = "firebaseAuthInProgress";
+const appTokenKey = "appToken";
 
 WebFont.load({
     google: {
@@ -14,7 +20,16 @@ WebFont.load({
 // import axios from "axios";
 
 class Navbar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+        this.userName = props.userName;
+    }
+    
     render() {
+
         return (
             <nav className="navbar">
                 <section className="navbar-title">
@@ -32,7 +47,12 @@ class Navbar extends Component {
                         </Link>
                     </section>
                     <section className="navbar-section">
-                        <h1 className="heading">Test</h1>
+                        <Link to="/login" className="logo btn btl-link" onClick={this.props.showLoginHandler}>
+                            <h1 className="heading"> 
+                                {this.props.userName}
+                                {!this.props.isSignedIn && "Login"}{this.props.isSignedIn && " Logout"}
+                            </h1>
+                        </Link>
                     </section>
                 </section>
             </nav>

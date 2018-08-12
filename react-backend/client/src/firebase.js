@@ -9,5 +9,5 @@ import firebase from 'firebase';
     storageBucket: "supreme-eureka.appspot.com",
     messagingSenderId: "714618331132"
   };
-firebase.initializeApp(config);
+// firebase.initializeApp(config);
 export default firebase;
