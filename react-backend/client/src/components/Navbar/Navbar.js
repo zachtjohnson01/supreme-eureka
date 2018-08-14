@@ -3,6 +3,7 @@ import {Link, withRouter} from "react-router-dom";
 import "../../App.css";
 import "./Navbar.css";
 import WebFont from 'webfontloader';
+import firebase from 'firebase';
 import * as firebaseui from 'firebaseui';
 import {loginWithGoogle} from "../helpers/auth";
 import {firebaseAuth} from "../config/constants";
@@ -26,6 +27,7 @@ class Navbar extends Component {
 
         }
         this.userName = props.userName;
+        this.isSignedIn = props.isSignedIn;
     }
     
     render() {
@@ -37,6 +39,13 @@ class Navbar extends Component {
                 </section>
                 <section className="navbar-options">
                     <section className="navbar-section">
+                        <h1 className="heading">
+                            {this.props.isSignedIn && 
+                            "Welcome, " + this.props.userName + "!"
+                            } 
+                        </h1>
+                    </section>
+                    <section className="navbar-section">
                         <Link to="/multiweek" className="logo btn btn-link">
                             <h1 className="heading">The Week</h1>
                         </Link>
@@ -47,12 +56,13 @@ class Navbar extends Component {
                         </Link>
                     </section>
                     <section className="navbar-section">
-                        <Link to="/login" className="logo btn btl-link" onClick={this.props.showLoginHandler}>
-                            <h1 className="heading"> 
-                                {this.props.userName}
-                                {!this.props.isSignedIn && "Login"}{this.props.isSignedIn && " Logout"}
-                            </h1>
-                        </Link>
+
+                            <Link to="/login" className="logo btn btl-link" onClick={this.props.showLoginHandler}>
+                                <h1 className="heading"> 
+                                    {!this.props.isSignedIn && "Login"}
+                                    {this.props.isSignedIn && "Sign Out"}
+                                </h1>
+                            </Link>
                     </section>
                 </section>
             </nav>

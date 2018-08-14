@@ -35,21 +35,36 @@ class Login extends React.Component {
         this.signedIn = props.signedIn;
         this.signedOut = props.signedOut;
         this.setUserName = props.setUserName;
+        this.hideLoginHandler = props.hideLoginHandler;
     }
 
     componentDidMount() {
         this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
             this.setState({isSignedIn: !!user});
-            console.log(user.displayName)
-            console.log(this.state.isSignedIn)
+            // console.log(user.displayName)
+            console.log('isSignedIn: ' + this.state.isSignedIn)
             this.signedIn(!!user);
             this.setUserName(user.displayName);
         });
     }
-
+    
     componentWillUnmount() {
         this.unregisterAuthObserver();
     }
+    
+    logout() {
+        firebase.auth().signOut().then( () => {
+            console.log("Signed out");
+            // {this.hideLoginHandler.bind(this)};
+            // this.setUserName('');
+            // this.signedIn(false);
+        });
+    }
+
+    // componentDidUpdate() {
+    //     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
+    //     });
+    // }
 
   render() {
     return (
@@ -65,8 +80,7 @@ class Login extends React.Component {
             }
             {this.state.isSignedIn &&
                 <div>
-                    {firebase.auth().currentUser.displayName}
-                    <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
+                    <a onClick={this.logout}>Are you sure?</a>
                 </div>
             }
         </Modal>
