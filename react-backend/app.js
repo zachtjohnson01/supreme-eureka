@@ -47,11 +47,11 @@ app.use(function(err, req, res, next) {
 
 // Initialize Firebase
 // TODO: Replace with your project's customized code snippet
-var config = {
-  apiKey: "AIzaSyBe4LpKKm48PuMtTsaPmMPTfK4JXTnMxYA",
-  authDomain: "supreme-eureka.firebaseapp.com",
-  databaseURL: "https://supreme-eureka.firebaseio.com"
-};
+// var config = {
+//   apiKey: "AIzaSyBe4LpKKm48PuMtTsaPmMPTfK4JXTnMxYA",
+//   authDomain: "supreme-eureka.firebaseapp.com",
+//   databaseURL: "https://supreme-eureka.firebaseio.com"
+// };
 
 // firebase.initializeApp(config);
 
