@@ -11,7 +11,7 @@ const config = {
     databaseURL: "https://supreme-eureka.firebaseio.com"
     // ...
 };
-firebase.initializeApp(config);
+// firebase.initializeApp(config);
 
 class Login extends React.Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class Login extends React.Component {
         this.hideLoginHandler = props.hideLoginHandler;
         this.uiConfig = {
             // Popup signin flow rather than redirect flow.
-            signInFlow: 'popup',
+            signInFlow: 'redirect',
             // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
             // signInSuccessUrl: '/signedIn',
             // We will display Google and Facebook as auth providers.
@@ -63,11 +63,11 @@ class Login extends React.Component {
     componentDidMount = () => {
         this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
             this.setState({isSignedIn: !!user});
-            // console.log(user.displayName)
             console.log('isSignedIn: ' + this.state.isSignedIn)
             this.signedIn(!!user);
             this.setUserName(user.displayName);
-        });
+            this.hideLoginHandler();
+        })
     }
     
     componentWillUnmount = () => {
@@ -77,9 +77,7 @@ class Login extends React.Component {
     logout = () => {
         firebase.auth().signOut().then( () => {
             console.log("Signed out");
-            // {this.hideLoginHandler.bind(this)};
-            // this.setUserName('');
-            // this.signedIn(false);
+            this.hideLoginHandler();
         });
     }
 
@@ -88,7 +86,7 @@ class Login extends React.Component {
       <div className="login-popup-modal">
         <Modal 
         show={this.props.showLogin}
-        modalClosed={this.props.hideLoginHandler}
+        modalClosed={this.hideLoginHandler}
         >
             {this.state.isSignedIn !== undefined && !this.state.isSignedIn &&
             <div>
@@ -97,7 +95,7 @@ class Login extends React.Component {
             }
             {this.state.isSignedIn &&
                 <div>
-                    <a onClick={this.logout}>Are you sure?</a>
+                    <a onClick={this.logout.bind(this)}>Are you sure you want to sign out?</a>
                 </div>
             }
         </Modal>

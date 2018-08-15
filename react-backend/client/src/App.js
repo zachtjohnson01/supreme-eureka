@@ -25,8 +25,9 @@ class App extends Component {
       .then(users => this.setState({users}));
     fetch('/')
   }
-  hideLoginHandler = () => {
+  hideLoginHandler = (e) => {
     console.log("Setting false login");
+    // e.preventDefault();
     this.setState({
       showLogin: false
     });
@@ -56,8 +57,8 @@ class App extends Component {
     this.setState({
       userName: name
     })
-  }
 
+  }
 
   render() {
     return (
