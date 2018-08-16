@@ -3,6 +3,7 @@ import React from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
 import Modal from "../UI/Modal/Modal";
+import "./Login.css";
 
 // Configure Firebase.
 const config = {
@@ -13,12 +14,14 @@ const config = {
 };
 // firebase.initializeApp(config);
 
+
 class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isSignedIn: false
         }
+        this.email;
         this.signedIn = props.signedIn;
         this.signedOut = props.signedOut;
         this.setUserName = props.setUserName;
@@ -58,7 +61,13 @@ class Login extends React.Component {
         //     }
         // }
     
-
+    writeUserData = (userId, name, email, imageUrl) => {
+        firebase.database().ref('users/' + userId).set({
+            username: name,
+            email: email,
+            profile_picture: imageUrl
+        })
+    }
 
     componentDidMount = () => {
         this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
@@ -67,6 +76,17 @@ class Login extends React.Component {
             this.signedIn(!!user);
             this.setUserName(user.displayName);
             this.hideLoginHandler();
+            var name, email, photoURL, uid, emailVerified;
+            if (user) {
+                user.providerData.forEach(function(profile) {
+                    name = profile.displayName;
+                    email = profile.email;
+                    photoURL = profile.photoURL;
+                    emailVerified = profile.emailVerified;
+                    uid = profile.uid
+                });
+            this.writeUserData(uid, name, email, photoURL);
+            }
         })
     }
     
@@ -94,8 +114,8 @@ class Login extends React.Component {
             </div>
             }
             {this.state.isSignedIn &&
-                <div>
-                    <a onClick={this.logout.bind(this)}>Are you sure you want to sign out?</a>
+                <div onClick={this.logout.bind(this)} className="logoutConfirmation">
+                    Are you sure you want to sign out?
                 </div>
             }
         </Modal>
