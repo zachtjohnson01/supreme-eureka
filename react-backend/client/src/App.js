@@ -5,6 +5,7 @@ import './App.css';
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import MultiWeek from "./components/MultiWeek/MultiWeek";
+import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
 import firebase from 'firebase';
@@ -87,6 +88,10 @@ class App extends Component {
         <Route
           path="/login"
           render={(props) => <Login />}
+        />
+        <Route
+          path="/schedule"
+          render={(props) => <Schedule />}
         />
         <Footer />
       </div>

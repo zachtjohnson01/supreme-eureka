@@ -56,8 +56,17 @@ class Navbar extends Component {
                         </Link>
                     </section>
                     <section className="navbar-section">
+                        <Link to="/schedule" className="logo btn btl-link">
+                            <h1 className="heading">Schedule</h1>
+                        </Link>
+                    </section>
+                    <section className="navbar-section">
 
-                            <Link to="/login" className="logo btn btl-link" onClick={this.props.showLoginHandler}>
+                            <Link 
+                                to="/login" 
+                                className="logo btn btl-link" 
+                                onClick={this.props.showLoginHandler}
+                            >
                                 <h1 className="heading"> 
                                     {!this.props.isSignedIn && "Login"}
                                     {this.props.isSignedIn && "Sign Out"}
