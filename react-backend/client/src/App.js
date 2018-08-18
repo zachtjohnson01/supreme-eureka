@@ -8,7 +8,7 @@ import MultiWeek from "./components/MultiWeek/MultiWeek";
 import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
-import firebase from 'firebase';
+import firebase, { database } from 'firebase';
 
 class App extends Component {
   constructor(props) {
@@ -61,6 +61,26 @@ class App extends Component {
 
   }
 
+  writeData = (schedule) => {
+    const userId = sessionStorage.getItem('userId');
+    if(this.state.isSignedIn) {
+      firebase.database().ref('users/' + userId + "/schedules").set({
+        schedule
+      })
+    }
+  }
+  
+  // retrieveData = () => {
+  //   const userId = sessionStorage.getItem('userId');
+  //   firebase.database().ref('users/' + userId + "/schedules").on("value", function(snapshot) {
+  //     console.log(snapshot.val());
+  //     if (!snapshot.val()) {
+  //       let data = snapshot.val();
+  //       return data;
+  //     }
+  //   })
+  // }
+
   render() {
     return (
       <div className="App">
@@ -91,7 +111,12 @@ class App extends Component {
         />
         <Route
           path="/schedule"
-          render={(props) => <Schedule />}
+          render={(props) => 
+            <Schedule 
+              writeData={this.writeData.bind(this)} 
+              isSignedIn={this.state.isSignedIn}
+              // retrieveData={this.retrieveData.bind(this)}
+            />}
         />
         <Footer />
       </div>

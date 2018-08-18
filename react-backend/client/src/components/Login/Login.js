@@ -70,6 +70,10 @@ class Login extends React.Component {
     }
 
     componentDidMount = () => {
+        if(!sessionStorage.getItem('userId')) {
+            console.log('Setting default user');
+            sessionStorage.setItem('userId','default')
+        };
         this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
             this.setState({isSignedIn: !!user});
             console.log('isSignedIn: ' + this.state.isSignedIn)
@@ -86,6 +90,7 @@ class Login extends React.Component {
                     uid = profile.uid
                 });
             this.writeUserData(uid, name, email, photoURL);
+            sessionStorage.setItem('userId', uid);
             }
         })
     }
