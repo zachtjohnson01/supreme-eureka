@@ -27,7 +27,7 @@ class App extends Component {
     fetch('/')
   }
   hideLoginHandler = (e) => {
-    console.log("Setting false login");
+    console.log("Hiding login handler");
     // e.preventDefault();
     this.setState({
       showLogin: false

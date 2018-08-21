@@ -39,23 +39,23 @@ class Schedule extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const userId = sessionStorage.getItem('userId');
         let data = {};
         if(this.props.isSignedIn) {
             firebase.database().ref('users/' + userId + "/schedules/schedule").on("value", function(snapshot) {
                 console.log(snapshot.val());
                 data = snapshot.val();
-                console.log(data.monday_breakfast);
+                // console.log(data.monday_breakfast);
                 let bfast = data.monday_breakfast;
             }, function(errorObject) {
                 console.log("The read failed: " + errorObject.code);
             })
             this.setState({
-                monday_breakfast: data.monday_breakfast
-                // monday_lunch: data.monday_lunch, 
-                // monday_dinner: data.monday_dinner,
-                // tuesday_breakfast: data.tuesday_breakfast,
+                monday_breakfast: data.monday_breakfast,
+                monday_lunch: data.monday_lunch, 
+                monday_dinner: data.monday_dinner,
+                tuesday_breakfast: data.tuesday_breakfast
                 // tuesday_lunch: data.tuesday_lunch, 
                 // tuesday_dinner: data.tuesday_dinner,
                 // wednesday_breakfast: data.wednesday_breakfast,

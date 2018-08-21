@@ -76,12 +76,12 @@ class Login extends React.Component {
         };
         this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
             this.setState({isSignedIn: !!user});
-            console.log('isSignedIn: ' + this.state.isSignedIn)
             this.signedIn(!!user);
-            this.setUserName(user.displayName);
-            this.hideLoginHandler();
-            var name, email, photoURL, uid, emailVerified;
             if (user) {
+                console.log('isSignedIn: ' + this.state.isSignedIn)
+                this.setUserName(user.displayName);
+                this.hideLoginHandler();
+                var name, email, photoURL, uid, emailVerified;
                 user.providerData.forEach(function(profile) {
                     name = profile.displayName;
                     email = profile.email;
@@ -89,8 +89,11 @@ class Login extends React.Component {
                     emailVerified = profile.emailVerified;
                     uid = profile.uid
                 });
-            this.writeUserData(uid, name, email, photoURL);
-            sessionStorage.setItem('userId', uid);
+                this.writeUserData(uid, name, email, photoURL);
+                sessionStorage.setItem('userId', uid);
+            } else {
+
+                console.log('User not logged in');
             }
         })
     }
