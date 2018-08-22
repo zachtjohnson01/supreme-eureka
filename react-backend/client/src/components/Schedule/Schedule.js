@@ -4,6 +4,7 @@ import "../../App.css";
 import "./Schedule.css";
 import WebFont from 'webfontloader';
 import firebase, { database } from 'firebase';
+import moment from 'moment';
 
 WebFont.load({
     google: {
@@ -40,22 +41,24 @@ class Schedule extends Component {
     }
 
     componentDidMount() {
+        this.props.retrieveData();
+        console.log(moment().week());
         const userId = sessionStorage.getItem('userId');
         let data = {};
         if(this.props.isSignedIn) {
             firebase.database().ref('users/' + userId + "/schedules/schedule").on("value", function(snapshot) {
-                console.log(snapshot.val());
+                // console.log(snapshot.val());
                 data = snapshot.val();
                 // console.log(data.monday_breakfast);
-                let bfast = data.monday_breakfast;
+                // let bfast = data.monday_breakfast;
             }, function(errorObject) {
                 console.log("The read failed: " + errorObject.code);
             })
             this.setState({
-                monday_breakfast: data.monday_breakfast,
-                monday_lunch: data.monday_lunch, 
-                monday_dinner: data.monday_dinner,
-                tuesday_breakfast: data.tuesday_breakfast
+                // monday_breakfast: data.monday_breakfast,
+                // monday_lunch: data.monday_lunch, 
+                // monday_dinner: data.monday_dinner,
+                // tuesday_breakfast: data.tuesday_breakfast
                 // tuesday_lunch: data.tuesday_lunch, 
                 // tuesday_dinner: data.tuesday_dinner,
                 // wednesday_breakfast: data.wednesday_breakfast,
@@ -87,8 +90,8 @@ class Schedule extends Component {
         }))
     }
 
-    componentWillUpdate() {
-        this.props.writeData(this.state)
+    componentDidUpdate() {
+        // this.props.writeData(this.state)
     }
 
     render() {

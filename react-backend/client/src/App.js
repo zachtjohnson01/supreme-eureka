@@ -69,6 +69,19 @@ class App extends Component {
       })
     }
   }
+
+  retrieveData = () => {
+    const userId = sessionStorage.getItem('userId');
+    if(this.state.isSignedIn) {
+      firebase.database().ref('users/' + userId).on('value', function(snapshot) {
+        // console.log('true');
+        console.log(snapshot.exists());
+        // console.log(snapshot.val());
+      }, function (errorObject) {
+        console.log('The read failed: ' + errorObject.code);
+      })
+    }
+  }
   
   // retrieveData = () => {
   //   const userId = sessionStorage.getItem('userId');
@@ -115,7 +128,7 @@ class App extends Component {
             <Schedule 
               writeData={this.writeData.bind(this)} 
               isSignedIn={this.state.isSignedIn}
-              // retrieveData={this.retrieveData.bind(this)}
+              retrieveData={this.retrieveData.bind(this)}
             />}
         />
         <Footer />
