@@ -9,6 +9,7 @@ import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
 import firebase, { database } from 'firebase';
+import moment from 'moment';
 
 class App extends Component {
   constructor(props) {
@@ -63,8 +64,10 @@ class App extends Component {
 
   writeData = (schedule) => {
     const userId = sessionStorage.getItem('userId');
+    let weeknum = moment().week();
+    console.log(weeknum);
     if(this.state.isSignedIn) {
-      firebase.database().ref('users/' + userId + "/schedules").set({
+      firebase.database().ref('schedules/' + userId + "/" + weeknum).set({
         schedule
       })
     }

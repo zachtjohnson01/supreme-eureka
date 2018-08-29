@@ -43,10 +43,19 @@ class Schedule extends Component {
     componentDidMount() {
         this.props.retrieveData();
         console.log(moment().week());
+        let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
         let data = {};
         if(this.props.isSignedIn) {
-            firebase.database().ref('users/' + userId + "/schedules/schedule").on("value", function(snapshot) {
+            // firebase.database().ref('users/' + userId + "/schedules/schedule").on("value", function(snapshot) {
+            //     // console.log(snapshot.val());
+            //     data = snapshot.val();
+            //     // console.log(data.monday_breakfast);
+            //     // let bfast = data.monday_breakfast;
+            // }, function(errorObject) {
+            //     console.log("The read failed: " + errorObject.code);
+            // })
+            firebase.database().ref('schedules/' + userId + "/" + weeknum).on("value", function(snapshot) {
                 // console.log(snapshot.val());
                 data = snapshot.val();
                 // console.log(data.monday_breakfast);
@@ -91,7 +100,7 @@ class Schedule extends Component {
     }
 
     componentDidUpdate() {
-        // this.props.writeData(this.state)
+        this.props.writeData(this.state)
     }
 
     render() {

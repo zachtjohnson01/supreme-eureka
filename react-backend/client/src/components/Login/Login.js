@@ -81,18 +81,31 @@ class Login extends React.Component {
                 console.log('isSignedIn: ' + this.state.isSignedIn)
                 this.setUserName(user.displayName);
                 this.hideLoginHandler();
-                var name, email, photoURL, uid, emailVerified;
+                var name, email, photoURL, uid;
                 user.providerData.forEach(function(profile) {
                     name = profile.displayName;
                     email = profile.email;
                     photoURL = profile.photoURL;
-                    emailVerified = profile.emailVerified;
+                    // emailVerified = profile.emailVerified;
                     uid = profile.uid
                 });
-                this.writeUserData(uid, name, email, photoURL);
+                // schedule = {};
+                firebase.database().ref('users/' + user.uid).on('value', function(snapshot) {
+                    // console.log('true');
+                    if(snapshot.exists()) {
+                        this.writeUserData(uid, name, email, photoURL);
+                        console.log(snapshot.exists())
+                        console.log('Creating user')
+                    } else {
+                        console.log(snapshot.exists())
+                        console.log(user.uid)
+                        console.log('User already created')
+                    }
+                  }, function (errorObject) {
+                    console.log('The read failed: ' + errorObject.code);
+                  })
                 sessionStorage.setItem('userId', uid);
             } else {
-
                 console.log('User not logged in');
             }
         })
