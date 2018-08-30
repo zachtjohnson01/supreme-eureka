@@ -62,15 +62,15 @@ class App extends Component {
 
   }
 
-  writeData = (schedule) => {
+  writeData = (test) => {
     const userId = sessionStorage.getItem('userId');
     let weeknum = moment().week();
     console.log(weeknum);
-    if(this.state.isSignedIn) {
-      firebase.database().ref('schedules/' + userId + "/" + weeknum).set({
-        schedule
-      })
-    }
+    // if(this.state.isSignedIn) {
+    //   firebase.database().ref('schedules/' + userId).set({
+    //     weeknum
+    //   })
+    // }
   }
 
   retrieveData = () => {

@@ -100,6 +100,14 @@ class Schedule extends Component {
     }
 
     componentDidUpdate() {
+        let data = this.state;
+        let userId = sessionStorage.getItem('userId');
+        let weeknum = moment().week();
+        if(this.props.isSignedIn) {
+            firebase.database().ref('schedules/' + userId).set({
+                [weeknum]: data
+            })
+        }
         this.props.writeData(this.state)
     }
 
