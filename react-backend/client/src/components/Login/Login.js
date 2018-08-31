@@ -94,11 +94,9 @@ class Login extends React.Component {
                     // console.log('true');
                     if(snapshot.exists()) {
                         this.writeUserData(uid, name, email, photoURL);
-                        console.log(snapshot.exists())
                         console.log('Creating user')
                     } else {
-                        console.log(snapshot.exists())
-                        console.log(user.uid)
+                        console.log('User.uid: ' + user.uid)
                         console.log('User already created')
                     }
                   }, function (errorObject) {

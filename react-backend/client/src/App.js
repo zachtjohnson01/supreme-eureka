@@ -62,16 +62,6 @@ class App extends Component {
 
   }
 
-  writeData = (test) => {
-    const userId = sessionStorage.getItem('userId');
-    let weeknum = moment().week();
-    console.log(weeknum);
-    // if(this.state.isSignedIn) {
-    //   firebase.database().ref('schedules/' + userId).set({
-    //     weeknum
-    //   })
-    // }
-  }
 
   retrieveData = () => {
     const userId = sessionStorage.getItem('userId');
@@ -129,7 +119,6 @@ class App extends Component {
           path="/schedule"
           render={(props) => 
             <Schedule 
-              writeData={this.writeData.bind(this)} 
               isSignedIn={this.state.isSignedIn}
               retrieveData={this.retrieveData.bind(this)}
             />}

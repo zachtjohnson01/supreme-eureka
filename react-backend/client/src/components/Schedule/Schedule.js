@@ -41,50 +41,41 @@ class Schedule extends Component {
     }
 
     componentDidMount() {
+        console.log('Component Mounted');
         this.props.retrieveData();
-        console.log(moment().week());
         let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
-        let data = {};
+        const setStateOnMount = (data) => {
+            this.setState({
+                monday_breakfast: data.monday_breakfast,
+                monday_lunch: data.monday_lunch, 
+                monday_dinner: data.monday_dinner,
+                tuesday_breakfast: data.tuesday_breakfast,
+                tuesday_lunch: data.tuesday_lunch, 
+                tuesday_dinner: data.tuesday_dinner,
+                wednesday_breakfast: data.wednesday_breakfast,
+                wednesday_lunch: data.wednesday_lunch, 
+                wednesday_dinner: data.wednesday_dinner,
+                thursday_breakfast: data.thursday_breakfast,
+                thursday_lunch: data.thursday_lunch, 
+                thursday_dinner: data.thursday_dinner,
+                friday_breakfast: data.friday_breakfast,
+                friday_lunch: data.friday_lunch, 
+                friday_dinner: data.friday_dinner,
+                saturday_breakfast: data.saturday_breakfast,
+                saturday_lunch: data.saturday_lunch, 
+                saturday_dinner: data.saturday_dinner,
+                sunday_breakfast: data.sunday_breakfast,
+                sunday_lunch: data.sunday_lunch, 
+                sunday_dinner: data.sunday_dinner
+            })
+        }
         if(this.props.isSignedIn) {
-            // firebase.database().ref('users/' + userId + "/schedules/schedule").on("value", function(snapshot) {
-            //     // console.log(snapshot.val());
-            //     data = snapshot.val();
-            //     // console.log(data.monday_breakfast);
-            //     // let bfast = data.monday_breakfast;
-            // }, function(errorObject) {
-            //     console.log("The read failed: " + errorObject.code);
-            // })
             firebase.database().ref('schedules/' + userId + "/" + weeknum).on("value", function(snapshot) {
-                // console.log(snapshot.val());
-                data = snapshot.val();
-                // console.log(data.monday_breakfast);
-                // let bfast = data.monday_breakfast;
+                let data = snapshot.val();
+                setStateOnMount(data);
             }, function(errorObject) {
                 console.log("The read failed: " + errorObject.code);
-            })
-            this.setState({
-                // monday_breakfast: data.monday_breakfast,
-                // monday_lunch: data.monday_lunch, 
-                // monday_dinner: data.monday_dinner,
-                // tuesday_breakfast: data.tuesday_breakfast
-                // tuesday_lunch: data.tuesday_lunch, 
-                // tuesday_dinner: data.tuesday_dinner,
-                // wednesday_breakfast: data.wednesday_breakfast,
-                // wednesday_lunch: data.wednesday_lunch, 
-                // wednesday_dinner: data.wednesday_dinner,
-                // thursday_breakfast: data.thursday_breakfast,
-                // thursday_lunch: data.thursday_lunch, 
-                // thursday_dinner: data.thursday_dinner,
-                // friday_breakfast: data.friday_breakfast,
-                // friday_lunch: data.friday_lunch, 
-                // friday_dinner: data.friday_dinner,
-                // saturday_breakfast: data.saturday_breakfast,
-                // saturday_lunch: data.saturday_lunch, 
-                // saturday_dinner: data.saturday_dinner,
-                // sunday_breakfast: data.sunday_breakfast,
-                // sunday_lunch: data.sunday_lunch, 
-                // sunday_dinner: data.sunday_dinner
             })
         }
     }
@@ -100,15 +91,16 @@ class Schedule extends Component {
     }
 
     componentDidUpdate() {
+        console.log('component updated');
         let data = this.state;
         let userId = sessionStorage.getItem('userId');
         let weeknum = moment().week();
         if(this.props.isSignedIn) {
+            console.log('COMPONENT UPDATED');
             firebase.database().ref('schedules/' + userId).set({
                 [weeknum]: data
             })
         }
-        this.props.writeData(this.state)
     }
 
     render() {
