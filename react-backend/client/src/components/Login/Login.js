@@ -117,6 +117,7 @@ class Login extends React.Component {
         firebase.auth().signOut().then( () => {
             console.log("Signed out");
             this.hideLoginHandler();
+            sessionStorage.removeItem('userId');
         });
     }
 

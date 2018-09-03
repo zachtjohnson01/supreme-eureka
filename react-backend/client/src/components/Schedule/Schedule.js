@@ -115,66 +115,11 @@ class Schedule extends Component {
         // this.getData = this.getbind(true);
     }
 
-    // componentDidMount() {
-    //     console.log(...this.state.schedule)
-    //     const weeknum = moment().week();
-    //     const userId = sessionStorage.getItem('userId');
-    //     this.getData(userId, weeknum);
-    //     base.syncState('schedules/' + 'default' + `/${weeknum}`, {
-    //         context: this,
-    //         state: 'schedule',
-    //         asArray: true
-    //     })
-    // }
-
     initSchedule = (userId, weeknum) => {
         console.log('Initializing schedule');
         // base.push(`schedules/${userId}/${weeknum}`, {
         //     data: {name:
         // });
-        base.syncState(`schedules/${userId}/${weeknum}`, {
-            context: this,
-            state: 'schedule',
-            asArray: false, 
-            defaultValue: true
-        })
-        // base.bindToState(`schedules/${userId}/${weeknum}`, {
-        //     context: this,
-        //     asArray: true,
-        //     state: 'schedule'
-        // });
-    }
-
-    // getData(userId, weeknum) {
-    //     base.fetch('schedules/' + userId + "/" + weeknum, {
-    //         context: this,
-    //         then(data) {
-    //             if (data = {}) {
-    //                 console.log('No data exists for this week')
-    //                 initSchedule(userId,weeknum);
-    //             } else {
-    //                 console.log(data);
-    //             }
-    //         }
-    //     });
-    // }
-
-
-
-    componentDidMount() {
-        // initSchedule = (userId, weeknum) => {
-        //     console.log('Initializing schedule');
-        //     base.post(`schedules/${userId}/${weeknum}`, {
-        //         context: this,
-        //         asArray: true,
-        //         state: 'schedule'
-        //     });
-        // };
-        console.log('Component Mounted');
-        console.log(this.state.schedule);
-        // this.props.retrieveData();
-        let weeknum = moment().week();
-        const userId = sessionStorage.getItem('userId');
         base.post(`schedules/${userId}/${weeknum}`, {
             data: {
                 monday_breakfast: true,
@@ -200,196 +145,160 @@ class Schedule extends Component {
                 sunday_dinner: true
             }
         })
-        base.syncState(`schedules/${userId}/${weeknum}`, {
-            context: this,
-            state: 'schedule',
-            asArray: false
-        })
+    }
 
-        // base.fetch('schedules/' + userId + "/" + weeknum, {
-        //     context: this,
-        //     then(data) {
-        //         if (data = {}) {
-        //             console.log('No data exists for this week')
-        //             this.initSchedule(userId,weeknum);
-        //         // } else {
-        //             console.log(data);
-        //         }
-        //     }
-        // });
-        // const setStateOnMount = (data) => {
-            // console.log(data);
-            // this.setState({
-            //     monday_breakfast: true,
-            //     monday_lunch: true, 
-            //     monday_dinner: true,
-            //     tuesday_breakfast: true,
-            //     tuesday_lunch: true, 
-            //     tuesday_dinner: true,
-            //     wednesday_breakfast: true,
-            //     wednesday_lunch: true, 
-            //     wednesday_dinner: true,
-            //     thursday_breakfast: true,
-            //     thursday_lunch: true, 
-            //     thursday_dinner: true,
-            //     friday_breakfast: true,
-            //     friday_lunch: true, 
-            //     friday_dinner: true,
-            //     saturday_breakfast: true,
-            //     saturday_lunch: true, 
-            //     saturday_dinner: true,
-            //     sunday_breakfast: true,
-            //     sunday_lunch: true, 
-            //     sunday_dinner: true
-            // })
-        // }
-        // if(this.props.isSignedIn) {
-        //     base.database().ref('schedules/' + userId + "/" + weeknum).on("value", function(snapshot) {
-        //         let data = snapshot.val();
-        //         setStateOnMount(data);
-        //     }, function(errorObject) {
-        //         console.log("The read failed: " + errorObject.code);
-        //     })
-        // }
+
+    componentDidMount() {
+        let weeknum = moment().week();
+        const userId = sessionStorage.getItem('userId');
+
+        base.fetch('schedules/' + userId + "/" + weeknum, {
+            context: this,
+            then(data) {
+                if (Object.keys(data).length === 0 && data.constructor === Object) {
+                    // console.log('No data exists for this week')
+                    this.initSchedule(userId,weeknum);
+                    this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
+                        context: this,
+                        state: 'schedule',
+                        asArray: false
+                    })
+                } else {
+                    // console.log(data);
+                    this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
+                        context: this,
+                        state: 'schedule',
+                        asArray: false
+                    })
+                }
+            }
+        });
     }
 
     toggleMeal = (event) => {
         const item = event.target.getAttribute("data-tag");
         const person = event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag");
-        // console.log(event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag"))
-        // console.log(item);
-
-        const newSched = update(this.state, {
-            schedule: {
-                [item]: { $apply: function(x) {return !x}}
-            }
-        })
-        this.setState(newSched)
+        if (this.props.isSignedIn) {
+            const newSched = update(this.state, {
+                schedule: {
+                    [item]: { $apply: function(x) {return !x}}
+                }
+            })
+            this.setState(newSched)
+        } else {
+            console.log('NOT SIGNED IN')
+        }
     }
-
-    updateSchedule = (data) => {
-
+    
+    componentWillUnmount(){
+        console.log('UNMOUNTING')
+        if(this.props.isSignedIn) {
+            base.removeBinding(this.ref);
+            this.userId = "";
+        } else {
+            console.log("USER NOT SIGNED IN")
+        }
     }
-
-    // componentDidUpdate() {
-    //     // console.log('component updated');
-    //     let data = this.state;
-    //     let userId = sessionStorage.getItem('userId');
-    //     let weeknum = moment().week();
-    //     if(this.props.isSignedIn) {
-    //         firebase.database().ref('schedules/' + userId + "/" + weeknum).on("value", function(snapshot) {
-    //             if(snapshot.val()) {
-    //                 firebase.database().ref('schedules/' + userId).update({
-    //                     [weeknum]: data
-    //                 })
-    //             } else {
-    //                 firebase.database().ref('schedules/' + userId).set({
-    //                     [weeknum]: data
-    //                 })
-    //             }
-    //         }, function(errorObject) {
-    //             console.log("The read failed: " + errorObject.code);
-    //         }
-    //         // console.log('COMPONENT UPDATED');
-    //         // firebase.database().ref('schedules/' + userId).set({
-    //         //     [weeknum]: data
-    //         // })
-    //     }
-    // }
 
     render() {
+        const weeknum = moment().week();
         return (
             <div className="container">
-                <div className="item auto person" data-tag="person_1">
-                    <div className="input-title">
-                        Person 1
-                    </div>
-                    <div className="input-input">
-                        <input type="text" name="name" value="name" />
-                    </div>
+                <div className="week-heading">
+                    <div className="weeknum">Week {weeknum} Meal Schedule</div>
                 </div>
-                <div className="day">
-                    <div className="day-title">Monday</div>
-                    <div className="meal-container">
-                        <button className={this.state.monday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_breakfast">Breakfast</button>
+                <div className="meals-container">
+                    <div className="item auto person" data-tag="person_1">
+                        <div className="input-title">
+                            Person 1
+                        </div>
+                        <div className="input-input">
+                            <input type="text" name="name" value="name" />
+                        </div>
                     </div>
-                    <div className="meal-container">
-                        <button className={this.state.monday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_lunch">Lunch</button>
+                    <div className="day">
+                        <div className="day-title">Monday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.monday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.monday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.monday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_dinner">Dinner</button>
+                        </div>
                     </div>
-                    <div className="meal-container">
-                        <button className={this.state.monday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_dinner">Dinner</button>
+                    <div className="day">
+                        <div className="day-title">Tuesday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.tuesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.tuesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.tuesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_dinner">Dinner</button>
+                        </div>
                     </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Tuesday</div>
-                    <div className="meal-container">
-                        <button className={this.state.tuesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_breakfast">Breakfast</button>
+                    <div className="day">
+                        <div className="day-title">Wednesday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.wednesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.wednesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.wednesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_dinner">Dinner</button>
+                        </div>
                     </div>
-                    <div className="meal-container">
-                        <button className={this.state.tuesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_lunch">Lunch</button>
+                    <div className="day">
+                        <div className="day-title">Thursday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.thursday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.thursday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.thursday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_dinner">Dinner</button>
+                        </div>
                     </div>
-                    <div className="meal-container">
-                        <button className={this.state.tuesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_dinner">Dinner</button>
+                    <div className="day">
+                        <div className="day-title">Friday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.friday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.friday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.friday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_dinner">Dinner</button>
+                        </div>
                     </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Wednesday</div>
-                    <div className="meal-container">
-                        <button className={this.state.wednesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_breakfast">Breakfast</button>
+                    <div className="day">
+                        <div className="day-title">Saturday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.saturday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.saturday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.saturday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_dinner">Dinner</button>
+                        </div>
                     </div>
-                    <div className="meal-container">
-                        <button className={this.state.wednesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_lunch">Lunch</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.wednesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_dinner">Dinner</button>
-                    </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Thursday</div>
-                    <div className="meal-container">
-                        <button className={this.state.thursday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_breakfast">Breakfast</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.thursday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_lunch">Lunch</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.thursday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_dinner">Dinner</button>
-                    </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Friday</div>
-                    <div className="meal-container">
-                        <button className={this.state.friday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_breakfast">Breakfast</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.friday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_lunch">Lunch</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.friday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_dinner">Dinner</button>
-                    </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Saturday</div>
-                    <div className="meal-container">
-                        <button className={this.state.saturday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_breakfast">Breakfast</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.saturday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_lunch">Lunch</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.saturday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_dinner">Dinner</button>
-                    </div>
-                </div>
-                <div className="day">
-                    <div className="day-title">Sunday</div>
-                    <div className="meal-container">
-                        <button className={this.state.sunday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_breakfast">Breakfast</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.sunday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_lunch">Lunch</button>
-                    </div>
-                    <div className="meal-container">
-                        <button className={this.state.sunday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_dinner">Dinner</button>
+                    <div className="day">
+                        <div className="day-title">Sunday</div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.sunday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_breakfast">Breakfast</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.sunday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_lunch">Lunch</button>
+                        </div>
+                        <div className="meal-container">
+                            <button className={this.state.schedule.sunday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_dinner">Dinner</button>
+                        </div>
                     </div>
                 </div>
 

@@ -31,7 +31,18 @@ class Navbar extends Component {
     }
     
     render() {
+        let schedule;
 
+        if (this.props.isSignedIn) {
+            schedule = (
+            <section className="navbar-section">
+                <Link to="/schedule" className="logo btn btl-link">
+                    <h1 className="heading">Schedule</h1>
+                </Link>
+            </section>
+            )
+        }
+        
         return (
             <nav className="navbar">
                 <section className="navbar-title">
@@ -55,11 +66,9 @@ class Navbar extends Component {
                             <h1 className="heading">Grocery Trip</h1>
                         </Link>
                     </section>
-                    <section className="navbar-section">
-                        <Link to="/schedule" className="logo btn btl-link">
-                            <h1 className="heading">Schedule</h1>
-                        </Link>
-                    </section>
+
+                    {schedule}
+
                     <section className="navbar-section">
 
                             <Link 
