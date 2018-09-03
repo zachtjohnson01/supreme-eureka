@@ -8,8 +8,9 @@ import MultiWeek from "./components/MultiWeek/MultiWeek";
 import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
-import firebase, { database } from 'firebase';
+// import firebase, { database } from 'firebase';
 import moment from 'moment';
+import { base } from './base';
 
 class App extends Component {
   constructor(props) {
@@ -66,7 +67,7 @@ class App extends Component {
   retrieveData = () => {
     const userId = sessionStorage.getItem('userId');
     if(this.state.isSignedIn) {
-      firebase.database().ref('users/' + userId).on('value', function(snapshot) {
+      base.ref('users/' + userId).on('value', function(snapshot) {
         // console.log('true');
         console.log(snapshot.exists());
         // console.log(snapshot.val());
