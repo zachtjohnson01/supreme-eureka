@@ -18,76 +18,32 @@ class Schedule extends Component {
     constructor(props) {
         super();
         this.state = {
-            // schedule: [
-            //     {monday_breakfast: true},
-            //     {monday_lunch: true}, 
-            //     {monday_dinner: true},
-            //     {tuesday_breakfast: true},
-            //     {tuesday_lunch: true}, 
-            //     {tuesday_dinner: true},
-            //     {wednesday_breakfast: true},
-            //     {wednesday_lunch: true}, 
-            //     {wednesday_dinner: true},
-            //     {thursday_breakfast: true},
-            //     {thursday_lunch: true}, 
-            //     {thursday_dinner: true},
-            //     {friday_breakfast: true},
-            //     {friday_lunch: true}, 
-            //     {friday_dinner: true},
-            //     {saturday_breakfast: true},
-            //     {saturday_lunch: true}, 
-            //     {saturday_dinner: true},
-            //     {sunday_breakfast: true},
-            //     {sunday_lunch: true}, 
-            //     {sunday_dinner: true}
-            // ],
+            people: 1,
             schedule: {
-                monday_breakfast: true,
-                monday_lunch: true, 
-                monday_dinner: true,
-                tuesday_breakfast: true,
-                tuesday_lunch: true, 
-                tuesday_dinner: true,
-                wednesday_breakfast: true,
-                wednesday_lunch: true, 
-                wednesday_dinner: true,
-                thursday_breakfast: true,
-                thursday_lunch: true, 
-                thursday_dinner: true,
-                friday_breakfast: true,
-                friday_lunch: true, 
-                friday_dinner: true,
-                saturday_breakfast: true,
-                saturday_lunch: true, 
-                saturday_dinner: true,
-                sunday_breakfast: true,
-                sunday_lunch: true, 
-                sunday_dinner: true
+                person1: {
+                    monday_breakfast: true,
+                    monday_lunch: true, 
+                    monday_dinner: true,
+                    tuesday_breakfast: true,
+                    tuesday_lunch: true, 
+                    tuesday_dinner: true,
+                    wednesday_breakfast: true,
+                    wednesday_lunch: true, 
+                    wednesday_dinner: true,
+                    thursday_breakfast: true,
+                    thursday_lunch: true, 
+                    thursday_dinner: true,
+                    friday_breakfast: true,
+                    friday_lunch: true, 
+                    friday_dinner: true,
+                    saturday_breakfast: true,
+                    saturday_lunch: true, 
+                    saturday_dinner: true,
+                    sunday_breakfast: true,
+                    sunday_lunch: true, 
+                    sunday_dinner: true
+                }
             },
-            // schedule: [
-            //     monday_breakfast,
-            //     monday_lunch, 
-            //     monday_dinner,
-            //     tuesday_breakfast,
-            //     tuesday_lunch, 
-            //     tuesday_dinner,
-            //     wednesday_breakfast,
-            //     wednesday_lunch, 
-            //     wednesday_dinner,
-            //     thursday_breakfast,
-            //     thursday_lunch, 
-            //     thursday_dinner,
-            //     friday_breakfast,
-            //     friday_lunch, 
-            //     friday_dinner,
-            //     saturday_breakfast,
-            //     saturday_lunch, 
-            //     saturday_dinner,
-            //     sunday_breakfast,
-            //     sunday_lunch, 
-            //     sunday_dinner
-            // ],
-            // schedule: {},
             monday_breakfast: true,
             monday_lunch: true, 
             monday_dinner: true,
@@ -112,15 +68,11 @@ class Schedule extends Component {
         }
         this.initSchedule = this.initSchedule.bind(this);
         this.toggleMeal = this.toggleMeal.bind(this);
-        // this.getData = this.getbind(true);
     }
 
     initSchedule = (userId, weeknum) => {
         console.log('Initializing schedule');
-        // base.push(`schedules/${userId}/${weeknum}`, {
-        //     data: {name:
-        // });
-        base.post(`schedules/${userId}/${weeknum}`, {
+        base.post(`schedules/${userId}/${weeknum}/person1`, {
             data: {
                 monday_breakfast: true,
                 monday_lunch: true, 
@@ -147,6 +99,47 @@ class Schedule extends Component {
         })
     }
 
+    addPerson = () => {
+        let weeknum = moment().week();
+        const userId = sessionStorage.getItem('userId');
+        let updatedPeople = this.state.people + 1;
+        this.setState(prevState => ({
+            people: updatedPeople
+        }));
+        base.post(`schedules/${userId}/${weeknum}/person${this.state.people + 1}`, {
+            data: {
+                monday_breakfast: true,
+                monday_lunch: true, 
+                monday_dinner: true,
+                tuesday_breakfast: true,
+                tuesday_lunch: true, 
+                tuesday_dinner: true,
+                wednesday_breakfast: true,
+                wednesday_lunch: true, 
+                wednesday_dinner: true,
+                thursday_breakfast: true,
+                thursday_lunch: true, 
+                thursday_dinner: true,
+                friday_breakfast: true,
+                friday_lunch: true, 
+                friday_dinner: true,
+                saturday_breakfast: true,
+                saturday_lunch: true, 
+                saturday_dinner: true,
+                sunday_breakfast: true,
+                sunday_lunch: true, 
+                sunday_dinner: true
+            }
+        })
+    }
+
+    removePerson = (event) => {
+        let weeknum = moment().week();
+        const userId = sessionStorage.getItem('userId');
+        const person = event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag");
+        base.remove(`schedules/${userId}/${weeknum}/${person}`)
+    }
+
 
     componentDidMount() {
         let weeknum = moment().week();
@@ -156,7 +149,6 @@ class Schedule extends Component {
             context: this,
             then(data) {
                 if (Object.keys(data).length === 0 && data.constructor === Object) {
-                    // console.log('No data exists for this week')
                     this.initSchedule(userId,weeknum);
                     this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
                         context: this,
@@ -164,7 +156,6 @@ class Schedule extends Component {
                         asArray: false
                     })
                 } else {
-                    // console.log(data);
                     this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
                         context: this,
                         state: 'schedule',
@@ -178,16 +169,20 @@ class Schedule extends Component {
     toggleMeal = (event) => {
         const item = event.target.getAttribute("data-tag");
         const person = event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag");
+        console.log(person);
         if (this.props.isSignedIn) {
             const newSched = update(this.state, {
                 schedule: {
-                    [item]: { $apply: function(x) {return !x}}
+                    [person]: {
+                        [item]: { $apply: function(x) {return !x}}
+                    }
                 }
             })
             this.setState(newSched)
         } else {
             console.log('NOT SIGNED IN')
-        }
+        };
+
     }
     
     componentWillUnmount(){
@@ -202,105 +197,118 @@ class Schedule extends Component {
 
     render() {
         const weeknum = moment().week();
+        if (this.state.schedule.person1) {
+            var scheduleNodes = 
+                [...Array(this.state.people).keys()].map(i => {
+                    const i2 = (i+1).toString();
+                    return (
+                        <div className="week-meals-container">
+                            <div className="item auto person" key={'person' + i} data-tag={"person" + (i+1)}>
+                                <div className="input-title">
+                                    Person {i2}
+                                </div>
+                                <div className="input-input">
+                                    <input type="text" name="name" value="" />
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Monday</div>
+                                <div className="meal-container">
+                                    <button className={ ('this.state.schedule.person' + i2 + '.monday_breakfast') ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_breakfast' + i} data-tag="monday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].monday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_lunch' + i} data-tag="monday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].monday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_dinner' + i} data-tag="monday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Tuesday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].tuesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'tuesday_breakfast' + i} data-tag="tuesday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].tuesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'tuesday_lunch' + i} data-tag="tuesday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].tuesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'tuesday_dinner' + i} data-tag="tuesday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Wednesday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].wednesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'wednesday_breakfast' + i} data-tag="wednesday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].wednesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'wednesday_lunch' + i} data-tag="wednesday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].wednesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'wednesday_dinner' + i} data-tag="wednesday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Thursday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].thursday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'thursday_breakfast' + i} data-tag="thursday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].thursday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'thursday_lunch' + i} data-tag="thursday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].thursday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'thursday_dinner' + i} data-tag="thursday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Friday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].friday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'friday_breakfast' + i} data-tag="friday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].friday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'friday_lunch' + i} data-tag="friday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].friday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'friday_dinner' + i} data-tag="friday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Saturday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].saturday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'saturday_breakfast' + i} data-tag="saturday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].saturday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'saturday_lunch' + i} data-tag="saturday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].saturday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'saturday_dinner' + i} data-tag="saturday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                            <div className="day">
+                                <div className="day-title">Sunday</div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].sunday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'sunday_breakfast' + i} data-tag="sunday_breakfast">Breakfast</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].sunday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'sunday_lunch' + i} data-tag="sunday_lunch">Lunch</button>
+                                </div>
+                                <div className="meal-container">
+                                    <button className={this.state.schedule['person' + i2].sunday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'sunday_dinner' + i} data-tag="sunday_dinner">Dinner</button>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })
+        }
         return (
             <div className="container">
                 <div className="week-heading">
                     <div className="weeknum">Week {weeknum} Meal Schedule</div>
                 </div>
-                <div className="meals-container">
-                    <div className="item auto person" data-tag="person_1">
-                        <div className="input-title">
-                            Person 1
-                        </div>
-                        <div className="input-input">
-                            <input type="text" name="name" value="name" />
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Monday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.monday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.monday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.monday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="monday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Tuesday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.tuesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.tuesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.tuesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="tuesday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Wednesday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.wednesday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.wednesday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.wednesday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="wednesday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Thursday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.thursday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.thursday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.thursday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="thursday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Friday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.friday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.friday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.friday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="friday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Saturday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.saturday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.saturday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.saturday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="saturday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                    <div className="day">
-                        <div className="day-title">Sunday</div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.sunday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_breakfast">Breakfast</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.sunday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_lunch">Lunch</button>
-                        </div>
-                        <div className="meal-container">
-                            <button className={this.state.schedule.sunday_dinner ? "clicked" : "unclicked"} onClick={this.toggleMeal} data-tag="sunday_dinner">Dinner</button>
-                        </div>
-                    </div>
-                </div>
+                <div>{this.state.people}</div>
+                <button onClick={this.removePerson.bind(this)}>Remove Person</button>
+                <button onClick={this.addPerson.bind(this)}>Add Person</button>
+                
+                {scheduleNodes}
 
             </div>
         )

@@ -28,7 +28,7 @@
     min-width: 80px;
 }
 
-.meals-container {
+.week-meals-container {
     display:flex;
     flex-direction: row;
     justify-content: center;
