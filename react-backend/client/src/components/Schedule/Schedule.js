@@ -18,8 +18,8 @@ class Schedule extends Component {
     constructor(props) {
         super();
         this.state = {
-            people: 1,
             schedule: {
+                people: 1,
                 person1: {
                     monday_breakfast: true,
                     monday_lunch: true, 
@@ -99,14 +99,24 @@ class Schedule extends Component {
         })
     }
 
+    initPeopleCount = (userId, weeknum) => {
+        base.post(`schedules/${userId}/${weeknum}/people`, {
+            data: 1
+        })
+    }
+
     addPerson = () => {
         let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
-        let updatedPeople = this.state.people + 1;
-        this.setState(prevState => ({
-            people: updatedPeople
-        }));
-        base.post(`schedules/${userId}/${weeknum}/person${this.state.people + 1}`, {
+        const updatedPeople = this.state.schedule.people + 1;
+        console.log(updatedPeople);
+        const newPeople = update(this.state, {
+            schedule: {
+                people: { $apply: function(x) {return (x + 1)} }
+            }
+        })
+        this.setState(newPeople);
+        base.post(`schedules/${userId}/${weeknum}/person${this.state.schedule.people + 1}`, {
             data: {
                 monday_breakfast: true,
                 monday_lunch: true, 
@@ -137,6 +147,12 @@ class Schedule extends Component {
         let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
         const person = event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag");
+        const newPeoples = update(this.state, {
+            schedule: {
+                people: { $apply: function(x) {return (x - 1)} }
+            }
+        })
+        this.setState(newPeoples);
         base.remove(`schedules/${userId}/${weeknum}/${person}`)
     }
 
@@ -150,6 +166,7 @@ class Schedule extends Component {
             then(data) {
                 if (Object.keys(data).length === 0 && data.constructor === Object) {
                     this.initSchedule(userId,weeknum);
+                    this.initPeopleCount(userId,weeknum);
                     this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
                         context: this,
                         state: 'schedule',
@@ -197,9 +214,10 @@ class Schedule extends Component {
 
     render() {
         const weeknum = moment().week();
+
         if (this.state.schedule.person1) {
             var scheduleNodes = 
-                [...Array(this.state.people).keys()].map(i => {
+                [...Array(this.state.schedule.people).keys()].map(i => {
                     const i2 = (i+1).toString();
                     return (
                         <div className="week-meals-container">
@@ -210,11 +228,16 @@ class Schedule extends Component {
                                 <div className="input-input">
                                     <input type="text" name="name" value="" />
                                 </div>
+                                { i === 0 ? null : 
+                                    <div className="input-remove">
+                                        <button onClick={this.removePerson.bind(this)}>Remove</button>
+                                    </div>
+                                }
                             </div>
                             <div className="day">
                                 <div className="day-title">Monday</div>
                                 <div className="meal-container">
-                                    <button className={ ('this.state.schedule.person' + i2 + '.monday_breakfast') ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_breakfast' + i} data-tag="monday_breakfast">Breakfast</button>
+                                    <button className={ this.state.schedule['person' + i2].monday_breakfast ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_breakfast' + i} data-tag="monday_breakfast">Breakfast</button>
                                 </div>
                                 <div className="meal-container">
                                     <button className={this.state.schedule['person' + i2].monday_lunch ? "clicked" : "unclicked"} onClick={this.toggleMeal} key={'monday_lunch' + i} data-tag="monday_lunch">Lunch</button>
@@ -305,7 +328,6 @@ class Schedule extends Component {
                     <div className="weeknum">Week {weeknum} Meal Schedule</div>
                 </div>
                 <div>{this.state.people}</div>
-                <button onClick={this.removePerson.bind(this)}>Remove Person</button>
                 <button onClick={this.addPerson.bind(this)}>Add Person</button>
                 
                 {scheduleNodes}
