@@ -228,10 +228,11 @@ class Schedule extends Component {
                                 <div className="input-input">
                                     <input type="text" name="name" value="" />
                                 </div>
-                                { i === 0 ? null : 
+                                { i === this.state.schedule.people - 1 && i !== 0 ?  
                                     <div className="input-remove">
                                         <button onClick={this.removePerson.bind(this)}>Remove</button>
                                     </div>
+                                    : null
                                 }
                             </div>
                             <div className="day">
