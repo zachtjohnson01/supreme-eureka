@@ -105,10 +105,16 @@ class Schedule extends Component {
         })
     }
 
+    initName = (userId, weeknum) => {
+        base.post(`schedules/${userId}/${weeknum}/person1/name`, {
+            data: 'person1'
+        })
+    }
+
     addPerson = () => {
         let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
-        const updatedPeople = this.state.schedule.people + 1;
+        const updatedPeople = (+this.state.schedule.people + 1);
         console.log(updatedPeople);
         const newPeople = update(this.state, {
             schedule: {
@@ -116,8 +122,9 @@ class Schedule extends Component {
             }
         })
         this.setState(newPeople);
-        base.post(`schedules/${userId}/${weeknum}/person${this.state.schedule.people + 1}`, {
+        base.post(`schedules/${userId}/${weeknum}/person${updatedPeople}`, {
             data: {
+                name: `person${updatedPeople}`,
                 monday_breakfast: true,
                 monday_lunch: true, 
                 monday_dinner: true,
@@ -167,6 +174,7 @@ class Schedule extends Component {
                 if (Object.keys(data).length === 0 && data.constructor === Object) {
                     this.initSchedule(userId,weeknum);
                     this.initPeopleCount(userId,weeknum);
+                    this.initName(userId, weeknum);
                     this.ref = base.syncState(`schedules/${userId}/${weeknum}`, {
                         context: this,
                         state: 'schedule',
@@ -201,6 +209,22 @@ class Schedule extends Component {
         };
 
     }
+
+    handleChange(event) {
+        const person = event.target.parentNode.parentNode.parentNode.firstChild.getAttribute("data-tag");
+        const personName = event.target.value;
+        console.log(person);
+        console.log(personName);
+        console.log(this.state.schedule);
+        const nameSched = update(this.state, {
+            schedule: {
+                [person]: {
+                    'name': { $set: personName}
+                }
+            }
+        })
+        this.setState(nameSched);
+    }
     
     componentWillUnmount(){
         console.log('UNMOUNTING')
@@ -223,10 +247,10 @@ class Schedule extends Component {
                         <div className="week-meals-container">
                             <div className="item auto person" key={'person' + i} data-tag={"person" + (i+1)}>
                                 <div className="input-title">
-                                    Person {i2}
+                                    Name
                                 </div>
                                 <div className="input-input">
-                                    <input type="text" name="name" value="" />
+                                    <input type="text" value={this.state.schedule['person' + i2].name} onChange={this.handleChange.bind(this)}/>
                                 </div>
                                 { i === this.state.schedule.people - 1 && i !== 0 ?  
                                     <div className="input-remove">
