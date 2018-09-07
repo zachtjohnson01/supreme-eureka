@@ -44,27 +44,30 @@ class Schedule extends Component {
                     sunday_dinner: true
                 }
             },
-            monday_breakfast: true,
-            monday_lunch: true, 
-            monday_dinner: true,
-            tuesday_breakfast: true,
-            tuesday_lunch: true, 
-            tuesday_dinner: true,
-            wednesday_breakfast: true,
-            wednesday_lunch: true, 
-            wednesday_dinner: true,
-            thursday_breakfast: true,
-            thursday_lunch: true, 
-            thursday_dinner: true,
-            friday_breakfast: true,
-            friday_lunch: true, 
-            friday_dinner: true,
-            saturday_breakfast: true,
-            saturday_lunch: true, 
-            saturday_dinner: true,
-            sunday_breakfast: true,
-            sunday_lunch: true, 
-            sunday_dinner: true
+            total_breakfast: 0,
+            total_lunch: 0, 
+            total_dinner: 0
+            // monday_breakfast: true,
+            // monday_lunch: true, 
+            // monday_dinner: true,
+            // tuesday_breakfast: true,
+            // tuesday_lunch: true, 
+            // tuesday_dinner: true,
+            // wednesday_breakfast: true,
+            // wednesday_lunch: true, 
+            // wednesday_dinner: true,
+            // thursday_breakfast: true,
+            // thursday_lunch: true, 
+            // thursday_dinner: true,
+            // friday_breakfast: true,
+            // friday_lunch: true, 
+            // friday_dinner: true,
+            // saturday_breakfast: true,
+            // saturday_lunch: true, 
+            // saturday_dinner: true,
+            // sunday_breakfast: true,
+            // sunday_lunch: true, 
+            // sunday_dinner: true
         }
         this.initSchedule = this.initSchedule.bind(this);
         this.toggleMeal = this.toggleMeal.bind(this);
@@ -224,6 +227,38 @@ class Schedule extends Component {
             }
         })
         this.setState(nameSched);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        let breakfast = 0;
+        let lunch = 0;
+        let dinner = 0;
+        Object.keys(this.state.schedule).map( i => {
+            console.log(this.state.schedule[i].monday_breakfast)
+            Object.keys(this.state.schedule[i]).map( j => {
+                if (j.split("_").pop() === 'breakfast' && this.state.schedule[i][j] === true) {
+                    breakfast += 1
+                } else if (j.split("_").pop() === 'lunch' && this.state.schedule[i][j] === true) {
+                    lunch += 1
+                } else if (j.split("_").pop() === 'dinner' && this.state.schedule[i][j] === true) {
+                    dinner += 1
+                }
+            })
+        })
+
+        console.log(prevState)
+        console.log("previousstatedinner: " + prevState.total_dinner)
+        console.log("breakfast: " + breakfast)
+        console.log("lunch: " + lunch)
+        console.log("dinner: " + dinner)
+        console.log(this.state.total_dinner === prevState.total_dinner)
+        if(dinner !== prevState.total_dinner || lunch !== prevState.total_lunch || breakfast !== prevState.total_breakfast){
+            this.setState({
+                total_breakfast: breakfast,
+                total_lunch: lunch,
+                total_dinner: dinner
+            })
+        }
     }
     
     componentWillUnmount(){
