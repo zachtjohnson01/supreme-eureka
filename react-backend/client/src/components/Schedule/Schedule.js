@@ -20,6 +20,12 @@ class Schedule extends Component {
         this.state = {
             schedule: {
                 people: 1,
+                total_breakfast: 0,
+                total_lunch: 0, 
+                total_dinner: 0,
+                weekend_breakfast: 0,
+                weekend_lunch: 0,
+                weekend_dinner: 0,
                 person1: {
                     monday_breakfast: true,
                     monday_lunch: true, 
@@ -44,30 +50,7 @@ class Schedule extends Component {
                     sunday_dinner: true
                 }
             },
-            total_breakfast: 0,
-            total_lunch: 0, 
-            total_dinner: 0
-            // monday_breakfast: true,
-            // monday_lunch: true, 
-            // monday_dinner: true,
-            // tuesday_breakfast: true,
-            // tuesday_lunch: true, 
-            // tuesday_dinner: true,
-            // wednesday_breakfast: true,
-            // wednesday_lunch: true, 
-            // wednesday_dinner: true,
-            // thursday_breakfast: true,
-            // thursday_lunch: true, 
-            // thursday_dinner: true,
-            // friday_breakfast: true,
-            // friday_lunch: true, 
-            // friday_dinner: true,
-            // saturday_breakfast: true,
-            // saturday_lunch: true, 
-            // saturday_dinner: true,
-            // sunday_breakfast: true,
-            // sunday_lunch: true, 
-            // sunday_dinner: true
+            exclude_weekend: false
         }
         this.initSchedule = this.initSchedule.bind(this);
         this.toggleMeal = this.toggleMeal.bind(this);
@@ -111,6 +94,16 @@ class Schedule extends Component {
     initName = (userId, weeknum) => {
         base.post(`schedules/${userId}/${weeknum}/person1/name`, {
             data: 'person1'
+        })
+    }
+
+    initMealCounts = (userId, weeknum) => {
+        base.post(`schedules/${userId}/${weeknum}/mealcount`, {
+            data: {
+                breakfast: 7,
+                lunch: 7,
+                dinner: 7
+            }
         })
     }
 
@@ -166,7 +159,6 @@ class Schedule extends Component {
         base.remove(`schedules/${userId}/${weeknum}/${person}`)
     }
 
-
     componentDidMount() {
         let weeknum = moment().week();
         const userId = sessionStorage.getItem('userId');
@@ -210,7 +202,6 @@ class Schedule extends Component {
         } else {
             console.log('NOT SIGNED IN')
         };
-
     }
 
     handleChange(event) {
@@ -233,32 +224,61 @@ class Schedule extends Component {
         let breakfast = 0;
         let lunch = 0;
         let dinner = 0;
-        Object.keys(this.state.schedule).map( i => {
-            console.log(this.state.schedule[i].monday_breakfast)
-            Object.keys(this.state.schedule[i]).map( j => {
-                if (j.split("_").pop() === 'breakfast' && this.state.schedule[i][j] === true) {
-                    breakfast += 1
-                } else if (j.split("_").pop() === 'lunch' && this.state.schedule[i][j] === true) {
-                    lunch += 1
-                } else if (j.split("_").pop() === 'dinner' && this.state.schedule[i][j] === true) {
-                    dinner += 1
-                }
+        let weekend_breakfast = 0;
+        let weekend_lunch = 0;
+        let weekend_dinner = 0;
+        if (!this.state.exclude_weekend) {
+            Object.keys(this.state.schedule).map( i => {
+                Object.keys(this.state.schedule[i]).map( j => {
+                    if (j.split("_").pop() === 'breakfast' && this.state.schedule[i][j] === true) {
+                        breakfast += 1
+                    } else if (j.split("_").pop() === 'lunch' && this.state.schedule[i][j] === true) {
+                        lunch += 1
+                    } else if (j.split("_").pop() === 'dinner' && this.state.schedule[i][j] === true) {
+                        dinner += 1
+                    }
+                })
             })
-        })
-
-        console.log(prevState)
-        console.log("previousstatedinner: " + prevState.total_dinner)
-        console.log("breakfast: " + breakfast)
-        console.log("lunch: " + lunch)
-        console.log("dinner: " + dinner)
-        console.log(this.state.total_dinner === prevState.total_dinner)
-        if(dinner !== prevState.total_dinner || lunch !== prevState.total_lunch || breakfast !== prevState.total_breakfast){
-            this.setState({
-                total_breakfast: breakfast,
-                total_lunch: lunch,
-                total_dinner: dinner
+        } else if (this.state.exclude_weekend) {
+            Object.keys(this.state.schedule).map( i => {
+                Object.keys(this.state.schedule[i]).map( j => {
+                    if (j.split("_").pop() === 'breakfast' && this.state.schedule[i][j] === true && j.split("_").shift() !== 'saturday' && j.split("_").shift() !== 'sunday') {
+                        breakfast += 1
+                    } else if (j.split("_").pop() === 'lunch' && this.state.schedule[i][j] === true && j.split("_").shift() !== 'saturday' && j.split("_").shift() !== 'sunday') {
+                        lunch += 1
+                    } else if (j.split("_").pop() === 'dinner' && this.state.schedule[i][j] === true && j.split("_").shift() !== 'saturday' && j.split("_").shift() !== 'sunday') {
+                        dinner += 1
+                    } else if (j.split("_").pop() === 'breakfast' && this.state.schedule[i][j] === true && (j.split("_").shift() === 'saturday' || j.split("_").shift() === 'sunday')) {
+                        weekend_breakfast += 1
+                    } else if (j.split("_").pop() === 'lunch' && this.state.schedule[i][j] === true && (j.split("_").shift() === 'saturday' || j.split("_").shift() === 'sunday')) {
+                        weekend_lunch += 1
+                    } else if (j.split("_").pop() === 'dinner' && this.state.schedule[i][j] === true && (j.split("_").shift() === 'saturday' || j.split("_").shift() === 'sunday')) {
+                        weekend_dinner += 1
+                    }
+                })
             })
         }
+
+        if(dinner !== prevState.schedule.total_dinner || lunch !== prevState.schedule.total_lunch || breakfast !== prevState.schedule.total_breakfast || weekend_dinner !== prevState.schedule.weekend_dinner || weekend_lunch !== prevState.schedule.weekend_lunch || weekend_breakfast !== prevState.schedule.weekend_breakfast){
+            const mealCount = update(this.state, {
+                schedule: {
+                    'total_breakfast': { $set: breakfast},
+                    'total_lunch': { $set: lunch},
+                    'total_dinner': { $set: dinner},
+                    'weekend_breakfast': { $set: weekend_breakfast},
+                    'weekend_lunch': { $set: weekend_lunch},
+                    'weekend_dinner': { $set: weekend_dinner}
+                }
+            })
+            this.setState(mealCount)
+        }
+    }
+
+    toggleExcludeWeekend() {
+        const excludeWeekend = update(this.state, {
+            exclude_weekend: { $apply: function(x) {return !x}}
+        })
+        this.setState(excludeWeekend)
     }
     
     componentWillUnmount(){
@@ -389,6 +409,33 @@ class Schedule extends Component {
                 </div>
                 <div>{this.state.people}</div>
                 <button onClick={this.addPerson.bind(this)}>Add Person</button>
+                <button onClick={this.toggleExcludeWeekend.bind(this)}>Separate Weekend</button>
+
+                <div className="week-totals">
+                    <div className="total">
+                        Breakfast Count: {this.state.schedule.total_breakfast}
+                    </div>
+                    <div className="total">
+                        Lunch Count: {this.state.schedule.total_lunch}
+                    </div>
+                    <div className="total">
+                        Dinner Count: {this.state.schedule.total_dinner}
+                    </div>
+                </div>
+                { this.state.exclude_weekend ? (
+                    <div className="weekend-totals">
+                        <div className="total">
+                            Breakfast Count: {this.state.schedule.weekend_breakfast}
+                        </div>
+                        <div className="total">
+                            Lunch Count: {this.state.schedule.weekend_lunch}
+                        </div>
+                        <div className="total">
+                            Dinner Count: {this.state.schedule.weekend_dinner}
+                        </div>
+                    </div>
+
+                ):""}
                 
                 {scheduleNodes}
 
