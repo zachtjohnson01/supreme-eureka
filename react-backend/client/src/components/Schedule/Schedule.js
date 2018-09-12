@@ -301,9 +301,13 @@ class Schedule extends Component {
                     return (
                         <div className="week-meals-container">
                             <div className="item auto person" key={'person' + i} data-tag={"person" + (i+1)}>
-                                <div className="input-title">
+                                { i === 0 ?
+                                    <button onClick={this.addPerson.bind(this)}>Add</button>
+                                    : null
+                                }
+                                {/* <div className="input-title">
                                     Name
-                                </div>
+                                </div> */}
                                 <div className="input-input">
                                     <input type="text" value={this.state.schedule['person' + i2].name} onChange={this.handleChange.bind(this)}/>
                                 </div>
@@ -407,35 +411,45 @@ class Schedule extends Component {
                 <div className="week-heading">
                     <div className="weeknum">Week {weeknum} Meal Schedule</div>
                 </div>
-                <div>{this.state.people}</div>
-                <button onClick={this.addPerson.bind(this)}>Add Person</button>
-                <button onClick={this.toggleExcludeWeekend.bind(this)}>Separate Weekend</button>
+                {/* <div>{this.state.people}</div> */}
+                
+                <div classname="meal-totals-container">
+                    <div className="buttons meal-total-item">
+                        
+                        <button onClick={this.toggleExcludeWeekend.bind(this)}>Separate Weekend</button>
+                    </div>
+                    <div className="week-totals meal-total-item">
+                        { this.state.exclude_weekend ? (
+                            <div className="total">Weekday Meals</div>
+                        ):"Total Meals"}
+                        <div className="total">
+                            Breakfast Count: {this.state.schedule.total_breakfast}
+                        </div>
+                        <div className="total">
+                            Lunch Count: {this.state.schedule.total_lunch}
+                        </div>
+                        <div className="total">
+                            Dinner Count: {this.state.schedule.total_dinner}
+                        </div>
+                    </div>
+                    <div className="meal-total-item">
+                        { this.state.exclude_weekend ? (
+                            <div className="weekend-totals">
+                                <div className="total">Weekend Meals</div>
+                                <div className="total">
+                                    Breakfast Count: {this.state.schedule.weekend_breakfast}
+                                </div>
+                                <div className="total">
+                                    Lunch Count: {this.state.schedule.weekend_lunch}
+                                </div>
+                                <div className="total">
+                                    Dinner Count: {this.state.schedule.weekend_dinner}
+                                </div>
+                            </div>
 
-                <div className="week-totals">
-                    <div className="total">
-                        Breakfast Count: {this.state.schedule.total_breakfast}
-                    </div>
-                    <div className="total">
-                        Lunch Count: {this.state.schedule.total_lunch}
-                    </div>
-                    <div className="total">
-                        Dinner Count: {this.state.schedule.total_dinner}
+                        ):null}
                     </div>
                 </div>
-                { this.state.exclude_weekend ? (
-                    <div className="weekend-totals">
-                        <div className="total">
-                            Breakfast Count: {this.state.schedule.weekend_breakfast}
-                        </div>
-                        <div className="total">
-                            Lunch Count: {this.state.schedule.weekend_lunch}
-                        </div>
-                        <div className="total">
-                            Dinner Count: {this.state.schedule.weekend_dinner}
-                        </div>
-                    </div>
-
-                ):""}
                 
                 {scheduleNodes}
 

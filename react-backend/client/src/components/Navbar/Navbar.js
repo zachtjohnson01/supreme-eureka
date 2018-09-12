@@ -57,11 +57,6 @@ class Navbar extends Component {
                         </h1>
                     </section>
                     <section className="navbar-section">
-                        <Link to="/multiweek" className="logo btn btn-link">
-                            <h1 className="heading">The Week</h1>
-                        </Link>
-                    </section>
-                    <section className="navbar-section">
                         <Link to="/grocerytrip" className="logo btn btl-link">
                             <h1 className="heading">Grocery Trip</h1>
                         </Link>

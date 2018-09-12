@@ -41,7 +41,56 @@
     margin-top: 5vh;
 }
 
+.meal-totals-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.meal-total-item {
+    display: inline-block;
+    margin: 10px;
+}
+
 .week-heading {
     font-size: 2em;
 }
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    display: inline-block;
+}
+
+.week-meals-container>.person {
+    display: flex;
+    flex-direction: column;
+    display: inline-block;
+    justify-content: flex-start;
+    /* align-items: flex-start; */
+    /* background-color: black; */
+    /* margin: 0; */
+    /* padding: 0; */
+}
+
+.input {
+    max-width: 8vw;
+}
+
+.person1 {
+    padding: 0;
+}
+
+.person>.input-input-0 {
+    margin-top:1vh;
+}
+.person>.remove {
+    justify-content: flex-start;
+}
+
+.meal-total-item {
+    width: 121px;
+}
+
 

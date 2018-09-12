@@ -104,10 +104,6 @@ class App extends Component {
           signedOut={this.signedOut.bind(this)}
           setUserName={this.setUserName.bind(this)}
         />
-        <Route 
-          path="/multiweek"
-          render={(props) => <MultiWeek />}
-        />
         <Route
           path="/grocerytrip"
           render={(props) => <GroceryTrip />}
