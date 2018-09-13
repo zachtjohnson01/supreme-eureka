@@ -32,6 +32,7 @@ class Navbar extends Component {
     
     render() {
         let schedule;
+        let recipe;
 
         if (this.props.isSignedIn) {
             schedule = (
@@ -40,6 +41,13 @@ class Navbar extends Component {
                     <h1 className="heading">Schedule</h1>
                 </Link>
             </section>
+            )
+            recipe = (
+            <section className="navbar-section">
+                <Link to="/recipe" className="logo btn btl-link">
+                    <h1 className="heading">Recipe</h1>
+                </Link>
+            </section> 
             )
         }
         
@@ -63,6 +71,7 @@ class Navbar extends Component {
                     </section>
 
                     {schedule}
+                    {recipe}
 
                     <section className="navbar-section">
 

@@ -4,10 +4,10 @@ import axios from "axios";
 import './App.css';
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
-import MultiWeek from "./components/MultiWeek/MultiWeek";
 import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
+import Recipe from "./components/Recipe/Recipe";
 // import firebase, { database } from 'firebase';
 import moment from 'moment';
 import { base } from './base';
@@ -119,6 +119,10 @@ class App extends Component {
               isSignedIn={this.state.isSignedIn}
               retrieveData={this.retrieveData.bind(this)}
             />}
+        />
+        <Route
+          path="/recipe"
+          render={(props) => <Recipe />}
         />
         <Footer />
       </div>
