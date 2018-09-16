@@ -8,6 +8,8 @@ import Schedule from "./components/Schedule/Schedule";
 import GroceryTrip from "./components/GroceryTrip/GroceryTrip";
 import Login from "./components/Login/Login";
 import Recipe from "./components/Recipe/Recipe";
+// import { parse } from "recipe-ingredient-parser";
+
 // import firebase, { database } from 'firebase';
 import moment from 'moment';
 import { base } from './base';

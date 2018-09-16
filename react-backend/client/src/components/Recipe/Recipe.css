@@ -1,0 +1,17 @@
+.recipeContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+textarea {
+    height: 25vh;
+    width: 25vw;
+}
+
+.recipe-input {
+    margin: 0 15vw;
+}
+
+.recipe-output {
+    margin-right: 15vw;
+}
