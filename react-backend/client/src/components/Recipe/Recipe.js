@@ -46,7 +46,7 @@ class Recipe extends Component {
     render() {
 
         if (this.state.parsedRecipe) {
-            var parsedIngredientes = 
+            var parsedIngredients = 
                 [...this.state.parsedRecipe].map(recipe => {
                     return (
                         <div className="recipe-ingredient">
@@ -65,7 +65,7 @@ class Recipe extends Component {
                     <div className="recipe-item recipe-output">
                         {/* ({this.state.recipe.split('\r\n')}) */}
                         <button className="recipe-parse" onClick={this.parseRecipe.bind(this)}>Parse Recipe</button>
-                        { parsedIngredientes}
+                        { parsedIngredients}
                     </div>
                 </div>
             </div>
